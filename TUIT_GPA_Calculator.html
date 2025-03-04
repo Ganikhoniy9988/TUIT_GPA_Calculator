@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GPA Calculator TUIT</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f0f0;
+      color: #333;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .dark {
+      background-color: #1c1c1c;
+      color: #ddd;
+    }
+    #header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #003399;
+      color: white;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+    #header > div {
+      margin-bottom: 10px;
+    }
+    #header select, #header label {
+      margin-right: 10px;
+      border-radius: 8px;
+    }
+    #content {
+      width: auto;
+      max-width: 100%;
+      margin: auto;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .dark #content {
+      background: #333;
+    }
+    #subjectCount, #enterButton {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    input[type="number"], select, button {
+      border-radius: 8px;
+    }
+    input[type="number"], select {
+      padding: 6px;
+      font-size: 1rem;
+      margin: 5px 0;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 10px 0;
+    }
+    .dark input[type="number"],
+    .dark button,
+    .dark select {
+      background-color: #151515;
+      color: #ddd;
+      border: 1px solid #555;
+    }
+    #tableContainer {
+      overflow-x: auto;
+      max-height: 300px; /* Set the maximum height as needed */
+      overflow-y: auto; /* Enable vertical scrolling */
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      border-radius: 0px;
+      overflow: hidden;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+    th, td {
+      text-align: center;
+      padding: 10px;
+      border: 1px solid #777;
+    }
+    th {
+      background-color: #003399;
+      color: white;
+      font-size: 0.9rem;
+    }
+    td {
+      font-size: 0.85rem;
+      background-color: #fff;
+    }
+    .dark th {
+      background-color: #003399;
+    }
+    .dark td {
+      background-color: #002060;
+      color: #ddd;
+      border-color: #666;
+    }
+    .input-group {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+    .input-group input {
+      width: 45%;
+      padding: 4px;
+      font-size: 0.85rem;
+      text-align: center;
+      border: 1px solid #777;
+      border-radius: 4px;
+    }
+    #gpaDisplay {
+      font-weight: bold;
+      font-size: 2.2rem;
+      margin-top: 15px;
+      text-align: center;
+    }
+    a {
+      text-decoration: none;
+      color: #66aaff;
+    }
+    .dark a {
+      color: #66aaff;
+    }
+    @media only screen and (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      #header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      #header > div {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      #content {
+        padding: 10px;
+        width: auto;
+      }
+      button, input[type="number"], select {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+      }
+      th, td {
+        font-size: 0.75rem;
+        padding: 8px;
+      }
+      .input-group input {
+        font-size: 0.75rem;
+      }
+      #gpaDisplay {
+        font-size: 3rem;
+      }
+    }
+    @media only screen and (min-width: 950px) {
+      #content {
+        display: flex;
+        justify-content: space-between;
+        width: auto;
+      }
+      #tableContainer {
+        width: 100%;
+        
+        padding: 10px;
+      }
+      #subjectCountInput {
+        width: 50%;
+        margin-right: 10px;
+      }
+      #supportFixed {
+        width: auto;
+        margin-top: 0;
+      }
+    }
+    
+    #supportFixed {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+      background-color: #003399;
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 100px;
+    }
+    #calculateButton {
+      position: static;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <div>
+      <label id="courseLabel" for="courseSelect"></label>
+      <select id="courseSelect">
+        <option value="60" selected>1</option>
+        <option value="120">2</option>
+        <option value="180">3</option>
+        <option value="240">4</option>
+      </select>
+      <span id="courseInfo"><-</span>
+    </div>
+    <div>
+      <label for="langSelect">Language:</label>
+      <select id="langSelect">
+        <option value="uz">O'zbekcha</option>
+        <option value="ru">Русский</option>
+      </select>
+      <label for="darkMode">Dark</label>
+      <input type="checkbox" id="darkMode">
+    </div>
+  </div>
+  <div id="content">
+    <div id="subjectCountInput">
+      <h2 id="headerTitle"></h2>
+      <div>
+        <label id="questionLabel" for="subjectCount"></label><br>
+        <input type="number" id="subjectCount" min="1" max="100" placeholder="1-100">
+        <button id="enterButton"></button>
+      </div>
+      <div id="infoText" style="margin-top:10px;"></div>
+      <div id="gpaDisplay" style="display:none;"></div>
+      <div id="creditInfo"></div>
+    </div>
+    <div id="tableContainer"></div>
+  </div>
+  <div id="supportFixed">
+    <span id="supportLabelFixed"></span>
+    <div>
+      <a id="supportLinkFixed" href="https://t.me/Ganikhoniy" target="_blank"></a>
+    </div>
+    <button id="calculateButton" style="display:none;"></button>
+  </div>
+  <script>
+    const texts = {
+      uz: {
+        headerTitle: "GPA Kalkulyator",
+        question: "Nechta fan?",
+        enter: "Kiritish",
+        info: "O'tolmagan fanlaringizni kiritish shart emas",
+        calculate: "Hisoblash",
+        subjectHeader: "№",
+        inputHeader: "Kredit / Baho",
+        creditPlaceholder: "Kredit",
+        gradePlaceholder: "Baho",
+        supportLabel: "Murojaat uchun:",
+        supportLink: "@Ganikhoniy",
+        courseLabel: "Kurs:"
+      },
+      ru: {
+        headerTitle: "GPA Калькулятор",
+        question: "Сколько предметов?",
+        enter: "Начать",
+        info: "Предметы, которые вы не сдали вставлять не нужно",
+        calculate: "Вычислить",
+        subjectHeader: "№",
+        inputHeader: "Кредит / Оценка",
+        creditPlaceholder: "Кредит",
+        gradePlaceholder: "Оценка",
+        supportLabel: "Тех подержка:",
+        supportLink: "@Ganikhoniy",
+        courseLabel: "Курс:"
+      }
+    };
+
+    let currentLang = "uz";
+    let semestrCredit = parseFloat(document.getElementById("courseSelect").value);
+
+    const elements = {
+      langSelect: document.getElementById("langSelect"),
+      headerTitle: document.getElementById("headerTitle"),
+      questionLabel: document.getElementById("questionLabel"),
+      enterButton: document.getElementById("enterButton"),
+      infoText: document.getElementById("infoText"),
+      tableContainer: document.getElementById("tableContainer"),
+      calculateButton: document.getElementById("calculateButton"),
+      gpaDisplay: document.getElementById("gpaDisplay"),
+      creditInfo: document.getElementById("creditInfo"),
+      courseLabel: document.getElementById("courseLabel"),
+      courseInfo: document.getElementById("courseInfo"),
+      darkMode: document.getElementById("darkMode"),
+      subjectCountInput: document.getElementById("subjectCount"),
+      courseSelect: document.getElementById("courseSelect"),
+      supportLabelFixed: document.getElementById("supportLabelFixed"),
+      supportLinkFixed: document.getElementById("supportLinkFixed")
+    };
+
+    function updateLanguage() {
+      const t = texts[currentLang];
+      elements.headerTitle.textContent = t.headerTitle;
+      elements.questionLabel.textContent = t.question;
+      elements.enterButton.textContent = t.enter;
+      elements.infoText.textContent = t.info;
+      elements.calculateButton.textContent = t.calculate;
+      elements.supportLabelFixed.textContent = t.supportLabel + " ";
+      elements.supportLinkFixed.textContent = t.supportLink;
+      elements.courseLabel.textContent = t.courseLabel;
+      elements.courseInfo.textContent = ` <- ${elements.courseSelect.value} Credits`;
+    }
+
+    function updateTableHeaders() {
+      const table = elements.tableContainer.querySelector("table");
+      if (table) {
+        const t = texts[currentLang];
+        const headerCells = table.querySelectorAll("tr:first-child th");
+        if (headerCells.length === 2) {
+          headerCells[0].textContent = t.subjectHeader;
+          headerCells[1].textContent = t.inputHeader;
+        }
+        const creditInputs = table.querySelectorAll("input.credit");
+        const gradeInputs = table.querySelectorAll("input.grade");
+        creditInputs.forEach(input => input.placeholder = t.creditPlaceholder);
+        gradeInputs.forEach(input => input.placeholder = t.gradePlaceholder);
+      }
+    }
+
+    function createTableRow(index, t) {
+      return `
+        <tr>
+          <td>${index}</td>
+          <td>
+            <div class="input-group">
+              <input type="number" class="credit" placeholder="${t.creditPlaceholder}" min="0">
+              <input type="number" class="grade" placeholder="${t.gradePlaceholder}" min="0">
+            </div>
+            <div class="result"></div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function handleEnterButtonClick() {
+      const count = parseInt(elements.subjectCountInput.value);
+      if (!count || count < 1 || count > 100) {
+        alert(currentLang === "uz" ? "Iltimos, 1 dan 100 gacha bo'lgan son kiriting!" : "Пожалуйста, введите число от 1 до 100!");
+        return;
+      }
+      elements.tableContainer.innerHTML = "";
+      const t = texts[currentLang];
+      const table = document.createElement("table");
+      table.innerHTML = `
+        <tr>
+          <th>${t.subjectHeader}</th>
+          <th>${t.inputHeader}</th>
+        </tr>
+        ${Array.from({ length: count }, (_, i) => createTableRow(i + 1, t)).join('')}
+      `;
+      elements.tableContainer.appendChild(table);
+      elements.calculateButton.style.display = "inline-block";
+      elements.gpaDisplay.style.display = "block";
+    }
+
+    function handleCalculateButtonClick() {
+      const table = elements.tableContainer.querySelector("table");
+      if (!table) return;
+      let totalCredits = 0;
+      let sumCreditGrade = 0;
+      const rows = table.querySelectorAll("tr");
+      rows.forEach((row, i) => {
+        if (i === 0) return; // Skip header row
+        const creditInput = row.querySelector("input.credit");
+        const gradeInput = row.querySelector("input.grade");
+        let credit = parseFloat(creditInput.value) || 0;
+        let grade = parseFloat(gradeInput.value) || 0;
+        if (credit < 0) {
+          alert(currentLang === "uz" 
+            ? `Qator ${i}: Kredit salbiy kiritildi. Avtomatik tarzda musbatga o'zgartirildi.`
+            : `Строка ${i}: Значение кредита отрицательное. Оно автоматически преобразовано в положительное.`);
+          credit = Math.abs(credit);
+          creditInput.value = credit;
+        }
+        if (grade < 0) {
+          alert(currentLang === "uz" 
+            ? `Qator ${i}: Baho noto'g'ri kiritildi. Avtomatik tarzda 2 ga o'zgartirildi.`
+            : `Строка ${i}: Значение оценки некорректно. Оно установлено в 2.`);
+          grade = 2;
+          gradeInput.value = grade;
+        }
+        if (grade > 5) {
+          alert(currentLang === "uz" 
+            ? `Qator ${i}: Baho 5 dan katta kiritildi. Avtomatik tarzda 5 ga o'zgартirildi.`
+            : `Строка ${i}: Оценка больше 5. Оно установлено в 5.`);
+          grade = 5;
+          gradeInput.value = grade;
+        }
+        totalCredits += credit;
+        let creditGrade = (grade <= 2.0) ? 0 : credit * grade;
+        sumCreditGrade += creditGrade;
+        const resultDiv = row.querySelector(".result");
+        resultDiv.textContent = creditGrade || "";
+      });
+      if (totalCredits > semestrCredit) {
+        alert(currentLang === "uz" 
+          ? `Kiritilgan kreditlar ${semestrCredit} dan oshib ketmasligi kerak!` 
+          : `Сумма кредитов не должна превышать ${semestrCredit}!`);
+        elements.creditInfo.textContent = "";
+        elements.gpaDisplay.textContent = "";
+      } else {
+        const gpa = (sumCreditGrade / semestrCredit).toFixed(2);
+        elements.gpaDisplay.textContent = `GPA: ${gpa}`;
+        elements.creditInfo.textContent = currentLang === "uz" 
+          ? `Jadvalga kiritilgan kredit: ${totalCredits}` 
+          : `Выведенные кредиты из таблицы: ${totalCredits}`;
+      }
+    }
+
+    elements.langSelect.addEventListener("change", function() {
+      currentLang = elements.langSelect.value;
+      updateLanguage();
+      if (elements.tableContainer.firstChild) {
+        updateTableHeaders();
+      }
+    });
+
+    elements.courseSelect.addEventListener("change", function() {
+      semestrCredit = parseFloat(elements.courseSelect.value);
+      elements.courseInfo.textContent = ` <- ${semestrCredit} Credits`;
+    });
+
+    elements.darkMode.addEventListener("change", function() {
+      document.body.classList.toggle("dark", elements.darkMode.checked);
+    });
+
+    elements.enterButton.addEventListener("click", handleEnterButtonClick);
+    elements.calculateButton.addEventListener("click", handleCalculateButtonClick);
+
+    updateLanguage();
+  </script>
+</body>
+</html>
