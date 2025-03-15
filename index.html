@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>GPA Calculator TUIT</title>
+  <link rel="icon" href="img/Logo.png" type="image/png"> <!-- Add this line to include the logo in the tab -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -257,6 +258,7 @@
       <select id="langSelect">
         <option value="uz">O'zbekcha</option>
         <option value="ru">Русский</option>
+        <option value="en">English</option> <!-- Add English option -->
       </select>
       <img src="img/day-night.png" alt="Dark Mode" id="darkModeToggle" style="cursor: pointer;"> <!-- Add your dark mode icon here -->
     </div>
@@ -315,6 +317,20 @@
         supportLabel: "Тех подержка:",
         supportLink: "Ganikhoniy",
         courseLabel: "Курс:"
+      },
+      en: {
+        headerTitle: "GPA Calculator",
+        question: "How many subjects?",
+        enter: "Enter",
+        info: "You don't need to enter subjects you didn't pass",
+        calculate: "Calculate",
+        subjectHeader: "№",
+        inputHeader: "Credit / Grade",
+        creditPlaceholder: "Credit",
+        gradePlaceholder: "Grade",
+        supportLabel: "Support:",
+        supportLink: "Ganikhoniy",
+        courseLabel: "Course:"
       }
     };
 
@@ -386,7 +402,7 @@
     function handleEnterButtonClick() {
       const count = parseInt(elements.subjectCountInput.value);
       if (!count || count < 1 || count > 100) {
-        alert(currentLang === "uz" ? "Iltimos, 1 dan 100 gacha bo'lgan son kiriting!" : "Пожалуйста, введите число от 1 до 100!");
+        alert(currentLang === "uz" ? "Iltimos, 1 dan 100 gacha bo'lgan son kiriting!" : currentLang === "ru" ? "Пожалуйста, введите число от 1 до 100!" : "Please enter a number between 1 and 100!"); // Translate to English
         return;
       }
       elements.tableContainer.innerHTML = "";
@@ -419,21 +435,27 @@
         if (credit < 0) {
           alert(currentLang === "uz" 
             ? `Qator ${i}: Kredit salbiy kiritildi. Avtomatik tarzda musbatga o'zgartirildi.`
-            : `Строка ${i}: Значение кредита отрицательное. Оно автоматически преобразовано в положительное.`);
+            : currentLang === "ru" 
+            ? `Строка ${i}: Значение кредита отрицательное. Оно автоматически преобразовано в положительное.`
+            : `Row ${i}: Credit value is negative. It has been automatically converted to positive.`);
           credit = Math.abs(credit);
           creditInput.value = credit;
         }
         if (grade < 0) {
           alert(currentLang === "uz" 
             ? `Qator ${i}: Baho noto'g'ri kiritildi. Avtomatik tarzda 2 ga o'zgartirildi.`
-            : `Строка ${i}: Значение оценки некорректно. Оно установлено в 2.`);
+            : currentLang === "ru" 
+            ? `Строка ${i}: Значение оценки некорректно. Оно установлено в 2.`
+            : `Row ${i}: Grade value is incorrect. It has been set to 2.`);
           grade = 2;
           gradeInput.value = grade;
         }
         if (grade > 5) {
           alert(currentLang === "uz" 
             ? `Qator ${i}: Baho 5 dan katta kiritildi. Avtomatik tarzda 5 ga o'zgартirildi.`
-            : `Строка ${i}: Оценка больше 5. Оно установлено в 5.`);
+            : currentLang === "ru" 
+            ? `Строка ${i}: Оценка больше 5. Теперь установлено как 5.`
+            : `Row ${i}: Grade is greater than 5. The value is now set to 5.`);
           grade = 5;
           gradeInput.value = grade;
         }
@@ -446,7 +468,9 @@
       if (totalCredits > semestrCredit) {
         alert(currentLang === "uz" 
           ? `Kiritilgan kreditlar ${semestrCredit} dan oshib ketmasligi kerak!` 
-          : `Сумма кредитов не должна превышать ${semestrCredit}!`);
+          : currentLang === "ru" 
+          ? `Сумма кредитов не должна превышать ${semestrCredit}!`
+          : `The total credits entered should not exceed ${semestrCredit}!`);
         elements.creditInfo.textContent = "";
         elements.gpaDisplay.textContent = "";
       } else {
@@ -454,7 +478,9 @@
         elements.gpaDisplay.textContent = `GPA: ${gpa}`;
         elements.creditInfo.textContent = currentLang === "uz" 
           ? `Jadvalga kiritilgan kredit: ${totalCredits}` 
-          : `Выведенные кредиты из таблицы: ${totalCredits}`;
+          : currentLang === "ru" 
+          ? `Выведенные кредиты из таблицы: ${totalCredits}`
+          : `Credits entered in the table: ${totalCredits}`; // Translate to English
       }
     }
 
