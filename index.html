@@ -17,6 +17,14 @@
       background-color: #1c1c1c;
       color: #ddd;
     }
+    .dark-circle {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background-color: #333;
+      border-radius: 50%;
+      margin-left: 5px;
+    }
     #header {
       display: flex;
       flex-wrap: wrap;
@@ -34,6 +42,9 @@
     }
     #header label {
       margin-right: 10px;
+    }
+    #courseinfo {
+      text-align: center;
     }
     #header select, #header label {
       margin-right: 10px;
@@ -66,8 +77,13 @@
       padding: 10px;
       font-size: 1rem;
       margin: 5px 0;
-      width: 50%;
       box-sizing: border-box;
+    }
+    button {
+      width: 30%;
+    }
+    select {
+      width: 50%;
     }
     button {
       background-color: rgb(29, 45, 91);
@@ -145,33 +161,43 @@
     }
     @media only screen and (max-width: 670px) {
       body {
-        padding: 10px;
+      padding: 10px;
       }
       #header {
-        flex-direction: column;
-        align-items: flex-start;
+      flex-direction: column;
+      align-items: flex-start;
       }
       #header > div {
-        width: 100%;
-        margin-bottom: 10px;
+      width: 100%;
+      margin-bottom: 10px;
       }
       #content {
-        padding: 10px;
-        width: auto;
+      padding: 10px;
+      width: auto;
       }
       button, input[type="number"], select {
-        font-size: 0.9rem;
-        padding: 8px 12px;
+      font-size: 0.9rem;
+      padding: 8px 12px;
       }
       th, td {
-        font-size: 0.75rem;
-        padding: 8px;
+      font-size: 0.75rem;
+      padding: 8px;
       }
       .input-group input {
-        font-size: 0.75rem;
+      font-size: 0.75rem;
       }
       #gpaDisplay {
-        font-size: 3rem;
+      font-size: 3rem;
+      }
+      #langSelect {
+      width: 100%;
+      }
+      #courseSelect {
+      width: 80%;
+      }
+      #courseInfo {
+      width: 100%;
+      text-align: center;
       }
     }
     @media only screen and (min-width: 950px) {
@@ -208,76 +234,8 @@
       position: static;
       display: inline-block;
     }
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 50px; /* Increased width */
-      height: 24px; /* Increased height */
-      margin-left: 10px;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      transition: .4s;
-      border-radius: 24px; /* Adjusted border-radius */
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 20px; /* Adjusted height */
-      width: 20px; /* Adjusted width */
-      left: 2px; /* Adjusted left position */
-      bottom: 2px; /* Adjusted bottom position */
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider {
-      background-color: #2196F3;
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(12px); /* Adjusted translateX */
-    }
-
-    .slider.round {
-      border-radius: 24px; /* Adjusted border-radius */
-    }
-
-    .slider.round:before {
-      border-radius: 50%;
-    }
-
-    @media only screen and (max-width: 670px) {
-      .switch {
-        width: 40px; /* Adjusted width for small screens */
-        height: 20px; /* Adjusted height for small screens */
-      }
-
-      .slider:before {
-        height: 16px; /* Adjusted height for small screens */
-        width: 16px; /* Adjusted width for small screens */
-        left: 2px; /* Adjusted left position for small screens */
-        bottom: 2px; /* Adjusted bottom position for small screens */
-      }
-
-      input:checked + .slider:before {
-        transform: translateX(20px); /* Adjusted translateX for small screens */
-      }
+    #courseInfo {
+      width: 130px;
     }
   </style>
 </head>
@@ -295,16 +253,12 @@
       <span id="courseInfo"></span>
     </div>
     <div>
-      <label for="langSelect">Language:</label>
+      <img src="img/language.png" alt="Language"> <!-- Add your language icon here -->
       <select id="langSelect">
         <option value="uz">O'zbekcha</option>
         <option value="ru">Русский</option>
       </select>
-      <label for="darkMode">Dark</label>
-      <div class="switch">
-        <input type="checkbox" id="darkMode">
-        <span class="slider round"></span>
-      </div>
+      <img src="img/day-night.png" alt="Dark Mode" id="darkModeToggle" style="cursor: pointer;"> <!-- Add your dark mode icon here -->
     </div>
   </div>
   <div id="content">
@@ -345,7 +299,7 @@
         creditPlaceholder: "Kredit",
         gradePlaceholder: "Baho",
         supportLabel: "Murojaat uchun:",
-        supportLink: "@Ganikhoniy",
+        supportLink: "Ganikhoniy",
         courseLabel: "Kurs:"
       },
       ru: {
@@ -359,7 +313,7 @@
         creditPlaceholder: "Кредит",
         gradePlaceholder: "Оценка",
         supportLabel: "Тех подержка:",
-        supportLink: "@Ganikhoniy",
+        supportLink: "Ganikhoniy",
         courseLabel: "Курс:"
       }
     };
@@ -379,7 +333,6 @@
       creditInfo: document.getElementById("creditInfo"),
       courseLabel: document.getElementById("courseLabel"),
       courseInfo: document.getElementById("courseInfo"),
-      darkMode: document.getElementById("darkMode"),
       subjectCountInput: document.getElementById("subjectCount"),
       courseSelect: document.getElementById("courseSelect"),
       supportLabelFixed: document.getElementById("supportLabelFixed"),
@@ -518,13 +471,8 @@
       elements.courseInfo.textContent = `${semestrCredit} Credits`; //credits txt
     });
 
-    elements.darkMode.addEventListener("change", function() {
-      document.body.classList.toggle("dark", elements.darkMode.checked);
-    });
-
-    document.querySelector('.slider.round').addEventListener('click', function() {
-      elements.darkMode.checked = !elements.darkMode.checked;
-      document.body.classList.toggle("dark", elements.darkMode.checked);
+    document.getElementById('darkModeToggle').addEventListener('click', function() {
+      document.body.classList.toggle("dark");
     });
 
     elements.enterButton.addEventListener("click", handleEnterButtonClick);
