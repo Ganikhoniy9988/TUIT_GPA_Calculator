@@ -11,7 +11,7 @@
       padding: 20px;
       background-color: #f0f0f0;
       color: #333;
-      transition: background-color 0.3s, color 0.3s;
+      transition: background-color 0.3s, color 0.6s;
     }
     .dark {
       background-color: #1c1c1c;
@@ -22,7 +22,7 @@
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      background-color: #003399;
+      background-color: rgb(29, 45, 91); /* Updated background color */
       color: white;
       padding: 10px;
       margin-bottom: 20px;
@@ -37,14 +37,19 @@
     }
     #header select, #header label {
       margin-right: 10px;
+      margin-left: 10px;
       border-radius: 8px;
+    }
+    #header img {
+      height: 40px; /* Adjust the height as needed */
+      margin-right: 10px;
     }
     #content {
       width: auto;
       max-width: 100%;
       margin: auto;
       background: white;
-      padding: 10px;
+      padding: 20px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
@@ -57,17 +62,21 @@
     }
     input[type="number"], select, button {
       border-radius: 8px;
-    }
-    input[type="number"], select {
-      padding: 6px;
+      border: 1px solid #ccc;
+      padding: 10px;
       font-size: 1rem;
       margin: 5px 0;
+      width: 50%;
+      box-sizing: border-box;
     }
     button {
-      padding: 10px 15px;
-      font-size: 1rem;
+      background-color: rgb(29, 45, 91);
+      color: white;
       cursor: pointer;
-      margin: 10px 0;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #003399;
     }
     .dark input[type="number"],
     .dark button,
@@ -78,7 +87,6 @@
     }
     #tableContainer {
       overflow-x: auto;
-      
       max-height: 300px; /* Set the maximum height as needed */
       overflow-y: auto; /* Enable vertical scrolling */
     }
@@ -86,7 +94,6 @@
       width: 100%;
       border-collapse: collapse;
       overflow: hidden;
-      
     }
     th, td {
       text-align: center;
@@ -94,7 +101,7 @@
       border: 1px solid #777;
     }
     th {
-      background-color: #003399;
+      background-color: rgb(29, 45, 91);
       color: white;
       font-size: 0.9rem;
     }
@@ -103,10 +110,10 @@
       background-color: #fff;
     }
     .dark th {
-      background-color: #003399;
+      background-color: rgb(29, 45, 91);
     }
     .dark td {
-      background-color: #002060;
+      background-color: #00206031;
       color: #ddd;
       border-color: #666;
     }
@@ -136,7 +143,7 @@
     .dark a {
       color: #66aaff;
     }
-    @media only screen and (max-width: 600px) {
+    @media only screen and (max-width: 670px) {
       body {
         padding: 10px;
       }
@@ -175,27 +182,23 @@
       }
       #tableContainer {
         width: 100%;
-        
         padding: 10px;
       }
       #subjectCountInput {
-        
         width: 60%;
         margin-right: 10px;
-
       }
       #supportFixed {
         width: auto;
         margin-top: 0;
       }
     }
-    
     #supportFixed {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-top: 20px;
-      background-color: #003399;
+      background-color: rgb(29, 45, 91); /* Updated background color */
       color: white;
       padding: 10px;
       border-radius: 8px;
@@ -205,11 +208,83 @@
       position: static;
       display: inline-block;
     }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px; /* Increased width */
+      height: 24px; /* Increased height */
+      margin-left: 10px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px; /* Adjusted border-radius */
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px; /* Adjusted height */
+      width: 20px; /* Adjusted width */
+      left: 2px; /* Adjusted left position */
+      bottom: 2px; /* Adjusted bottom position */
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(12px); /* Adjusted translateX */
+    }
+
+    .slider.round {
+      border-radius: 24px; /* Adjusted border-radius */
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+
+    @media only screen and (max-width: 670px) {
+      .switch {
+        width: 40px; /* Adjusted width for small screens */
+        height: 20px; /* Adjusted height for small screens */
+      }
+
+      .slider:before {
+        height: 16px; /* Adjusted height for small screens */
+        width: 16px; /* Adjusted width for small screens */
+        left: 2px; /* Adjusted left position for small screens */
+        bottom: 2px; /* Adjusted bottom position for small screens */
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(20px); /* Adjusted translateX for small screens */
+      }
+    }
   </style>
 </head>
 <body>
   <div id="header">
     <div>
+      <img src="img/Logo.png" alt="Logo"> <!-- Add your logo here -->
       <label id="courseLabel" for="courseSelect"></label>
       <select id="courseSelect">
         <option value="60" selected>1</option>
@@ -217,7 +292,7 @@
         <option value="180">3</option>
         <option value="240">4</option>
       </select>
-      <span id="courseInfo"><-</span>
+      <span id="courseInfo"></span>
     </div>
     <div>
       <label for="langSelect">Language:</label>
@@ -226,7 +301,10 @@
         <option value="ru">Русский</option>
       </select>
       <label for="darkMode">Dark</label>
-      <input type="checkbox" id="darkMode">
+      <div class="switch">
+        <input type="checkbox" id="darkMode">
+        <span class="slider round"></span>
+      </div>
     </div>
   </div>
   <div id="content">
@@ -241,7 +319,11 @@
       <div id="gpaDisplay" style="display:none;"></div>
       <div id="creditInfo"></div>
     </div>
-    <div id="tableContainer"></div>
+    <div id="tableContainer">
+      <div style="background-color: rgb(29, 45, 91); padding: 20px; border-radius: 8px;">
+        <img src="img/study.svg" alt="Study" style="display: block; margin: 20px auto; max-width: 200px;"> <!-- Add your SVG here -->
+      </div>
+    </div>
   </div>
   <div id="supportFixed">
     <span id="supportLabelFixed"></span>
@@ -314,7 +396,7 @@
       elements.supportLabelFixed.textContent = t.supportLabel + " ";
       elements.supportLinkFixed.textContent = t.supportLink;
       elements.courseLabel.textContent = t.courseLabel;
-      elements.courseInfo.textContent = ` <- ${elements.courseSelect.value} Credits`;
+      elements.courseInfo.textContent = `${elements.courseSelect.value} Credits`;
     }
 
     function updateTableHeaders() {
@@ -433,10 +515,15 @@
 
     elements.courseSelect.addEventListener("change", function() {
       semestrCredit = parseFloat(elements.courseSelect.value);
-      elements.courseInfo.textContent = ` <- ${semestrCredit} Credits`;
+      elements.courseInfo.textContent = `${semestrCredit} Credits`; //credits txt
     });
 
     elements.darkMode.addEventListener("change", function() {
+      document.body.classList.toggle("dark", elements.darkMode.checked);
+    });
+
+    document.querySelector('.slider.round').addEventListener('click', function() {
+      elements.darkMode.checked = !elements.darkMode.checked;
       document.body.classList.toggle("dark", elements.darkMode.checked);
     });
 
