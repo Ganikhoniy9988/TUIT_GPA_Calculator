@@ -5,245 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>GPA Calculator TUIT</title>
   <link rel="icon" href="img/Logo.png" type="image/png"> <!-- Add this line to include the logo in the tab -->
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background-color: #f0f0f0;
-      color: #333;
-      transition: background-color 0.3s, color 0.6s;
-    }
-    .dark {
-      background-color: #1c1c1c;
-      color: #ddd;
-    }
-    .dark-circle {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      background-color: #333;
-      border-radius: 50%;
-      margin-left: 5px;
-    }
-    #header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      background-color: rgb(29, 45, 91); /* Updated background color */
-      color: white;
-      padding: 10px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-    }
-    #header div {
-      display: flex;
-      align-items: center;
-    }
-    #header label {
-      margin-right: 10px;
-    }
-    #courseinfo {
-      text-align: center;
-    }
-    #header select, #header label {
-      margin-right: 10px;
-      margin-left: 10px;
-      border-radius: 8px;
-    }
-    #header img {
-      height: 40px; /* Adjust the height as needed */
-      margin-right: 10px;
-    }
-    #content {
-      width: auto;
-      max-width: 100%;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .dark #content {
-      background: #333;
-    }
-    #subjectCount, #enterButton {
-      width: 100%;
-      box-sizing: border-box;
-    }
-    input[type="number"], select, button {
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      padding: 10px;
-      font-size: 1rem;
-      margin: 5px 0;
-      box-sizing: border-box;
-    }
-    button {
-      width: 30%;
-    }
-    select {
-      width: 50%;
-    }
-    button {
-      background-color: rgb(29, 45, 91);
-      color: white;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #003399;
-    }
-    .dark input[type="number"],
-    .dark button,
-    .dark select {
-      background-color: #151515;
-      color: #ddd;
-      border: 1px solid #555;
-    }
-    #tableContainer {
-      overflow-x: auto;
-      max-height: 300px; /* Set the maximum height as needed */
-      overflow-y: auto; /* Enable vertical scrolling */
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      overflow: hidden;
-    }
-    th, td {
-      text-align: center;
-      padding: 10px;
-      border: 1px solid #777;
-    }
-    th {
-      background-color: rgb(29, 45, 91);
-      color: white;
-      font-size: 0.9rem;
-    }
-    td {
-      font-size: 0.85rem;
-      background-color: #fff;
-    }
-    .dark th {
-      background-color: rgb(29, 45, 91);
-    }
-    .dark td {
-      background-color: #00206031;
-      color: #ddd;
-      border-color: #666;
-    }
-    .input-group {
-      display: flex;
-      justify-content: center;
-      gap: 5px;
-    }
-    .input-group input {
-      width: 45%;
-      padding: 4px;
-      font-size: 0.85rem;
-      text-align: center;
-      border: 1px solid #777;
-      border-radius: 4px;
-    }
-    #gpaDisplay {
-      font-weight: bold;
-      font-size: 2.2rem;
-      margin-top: 15px;
-      text-align: center;
-    }
-    a {
-      text-decoration: none;
-      color: #66aaff;
-    }
-    .dark a {
-      color: #66aaff;
-    }
-    @media only screen and (max-width: 670px) {
-      body {
-      padding: 10px;
-      }
-      #header {
-      flex-direction: column;
-      align-items: flex-start;
-      }
-      #header > div {
-      width: 100%;
-      margin-bottom: 10px;
-      }
-      #content {
-      padding: 10px;
-      width: auto;
-      }
-      button, input[type="number"], select {
-      font-size: 0.9rem;
-      padding: 8px 12px;
-      }
-      th, td {
-      font-size: 0.75rem;
-      padding: 8px;
-      }
-      .input-group input {
-      font-size: 0.75rem;
-      }
-      #gpaDisplay {
-      font-size: 3rem;
-      }
-      #langSelect {
-      width: 100%;
-      }
-      #courseSelect {
-      width: 80%;
-      }
-      #courseInfo {
-      width: 100%;
-      text-align: center;
-      }
-    }
-    @media only screen and (min-width: 950px) {
-      #content {
-        display: flex;
-        justify-content: space-between;
-        width: auto;
-      }
-      #tableContainer {
-        width: 100%;
-        padding: 10px;
-      }
-      #subjectCountInput {
-        width: 60%;
-        margin-right: 10px;
-      }
-      #supportFixed {
-        width: auto;
-        margin-top: 0;
-      }
-    }
-    #supportFixed {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 20px;
-      background-color: rgb(29, 45, 91); /* Updated background color */
-      color: white;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-    #calculateButton {
-      position: static;
-      display: inline-block;
-    }
-    #courseInfo {
-      width: 130px;
-    }
-  </style>
+  <link rel="stylesheet" href="GPA_TUIT.css"> <!-- Include external stylesheet -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> <!-- Include Open Sans font -->
 </head>
 <body>
   <div id="header">
     <div>
-      <img src="img/Logo.png" alt="Logo"> <!-- Add your logo here -->
+      <img src="img/Logo.png" alt="Logo" id="logoImage"> <!-- Add your logo here -->
       <label id="courseLabel" for="courseSelect"></label>
       <select id="courseSelect">
         <option value="60" selected>1</option>
@@ -254,7 +22,7 @@
       <span id="courseInfo"></span>
     </div>
     <div>
-      <img src="img/language.png" alt="Language"> <!-- Add your language icon here -->
+      <img src="img/language.png" alt="Language" id="languageImage"> <!-- Add your language icon here -->
       <select id="langSelect">
         <option value="uz">O'zbekcha</option>
         <option value="ru">Русский</option>
@@ -302,7 +70,8 @@
         gradePlaceholder: "Baho",
         supportLabel: "Murojaat uchun:",
         supportLink: "Ganikhoniy",
-        courseLabel: "Kurs:"
+        courseLabel: "Kurs:",
+        credits: "Kreditlar"
       },
       ru: {
         headerTitle: "GPA Калькулятор",
@@ -316,7 +85,8 @@
         gradePlaceholder: "Оценка",
         supportLabel: "Тех подержка:",
         supportLink: "Ganikhoniy",
-        courseLabel: "Курс:"
+        courseLabel: "Курс:",
+        credits: "Кредиты"
       },
       en: {
         headerTitle: "GPA Calculator",
@@ -330,7 +100,8 @@
         gradePlaceholder: "Grade",
         supportLabel: "Support:",
         supportLink: "Ganikhoniy",
-        courseLabel: "Course:"
+        courseLabel: "Course:",
+        credits: "Credits"
       }
     };
 
@@ -352,7 +123,9 @@
       subjectCountInput: document.getElementById("subjectCount"),
       courseSelect: document.getElementById("courseSelect"),
       supportLabelFixed: document.getElementById("supportLabelFixed"),
-      supportLinkFixed: document.getElementById("supportLinkFixed")
+      supportLinkFixed: document.getElementById("supportLinkFixed"),
+      logoImage: document.getElementById("logoImage"),
+      languageImage: document.getElementById("languageImage")
     };
 
     function updateLanguage() {
@@ -365,7 +138,7 @@
       elements.supportLabelFixed.textContent = t.supportLabel + " ";
       elements.supportLinkFixed.textContent = t.supportLink;
       elements.courseLabel.textContent = t.courseLabel;
-      elements.courseInfo.textContent = `${elements.courseSelect.value} Credits`;
+      elements.courseInfo.textContent = `${elements.courseSelect.value} ${t.credits}`;
     }
 
     function updateTableHeaders() {
@@ -452,7 +225,7 @@
         }
         if (grade > 5) {
           alert(currentLang === "uz" 
-            ? `Qator ${i}: Baho 5 dan katta kiritildi. Avtomatik tarzda 5 ga o'zgартirildi.`
+            ? `Qator ${i}: Baho 5 dan katta kiritildi. Avtomatik tarzda 5 ga o'zgартирилди.`
             : currentLang === "ru" 
             ? `Строка ${i}: Оценка больше 5. Теперь установлено как 5.`
             : `Row ${i}: Grade is greater than 5. The value is now set to 5.`);
@@ -490,15 +263,40 @@
       if (elements.tableContainer.firstChild) {
         updateTableHeaders();
       }
+      if (elements.calculateButton.style.display !== "none") {
+        elements.calculateButton.click();
+      }
     });
 
     elements.courseSelect.addEventListener("change", function() {
       semestrCredit = parseFloat(elements.courseSelect.value);
-      elements.courseInfo.textContent = `${semestrCredit} Credits`; //credits txt
+      elements.courseInfo.textContent = `${semestrCredit} ${texts[currentLang].credits}`;
     });
 
     document.getElementById('darkModeToggle').addEventListener('click', function() {
       document.body.classList.toggle("dark");
+      // Ensure the glow color is updated based on the theme
+      const isDarkMode = document.body.classList.contains("dark");
+      const glowClass = isDarkMode ? 'glow-cyan' : 'glow-white';
+      document.querySelectorAll('#header img[src="img/Logo.png"], #header img[src="img/language.png"], #header img[src="img/day-night.png"]').forEach(img => {
+        img.classList.remove('glow-cyan', 'glow-white');
+        img.classList.add(glowClass);
+      });
+    });
+
+    elements.logoImage.addEventListener('click', function() {
+      const currentCourse = parseInt(elements.courseSelect.value);
+      const nextCourse = currentCourse === 240 ? 60 : currentCourse + 60;
+      elements.courseSelect.value = nextCourse;
+      elements.courseSelect.dispatchEvent(new Event('change'));
+    });
+
+    elements.languageImage.addEventListener('click', function() {
+      const languages = ['uz', 'ru', 'en'];
+      const currentLangIndex = languages.indexOf(currentLang);
+      const nextLangIndex = (currentLangIndex + 1) % languages.length;
+      elements.langSelect.value = languages[nextLangIndex];
+      elements.langSelect.dispatchEvent(new Event('change'));
     });
 
     elements.enterButton.addEventListener("click", handleEnterButtonClick);
@@ -509,6 +307,16 @@
         handleEnterButtonClick();
       }
     });
+
+    // Check if the user has a dark theme installed on the system
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.body.classList.add("dark");
+    }
+
+    // Check if the user is on a mobile device
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+      document.body.classList.add("mobile");
+    }
 
     updateLanguage();
   </script>
