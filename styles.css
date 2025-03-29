@@ -310,10 +310,6 @@ a {
   margin-left: auto; /* Push button to the right */
 }
 
-#calculateButton {
-  position: static;
-  display: inline-block;
-}
 #courseInfo {
   width: 130px;
   text-align: center;
@@ -348,9 +344,6 @@ a {
   max-width: 200px;
 }
 
-#calculateButton {
-  display: none;
-}
 @keyframes glow-white {
   0% { filter: drop-shadow(0 0 0px white); }
   50% { filter: drop-shadow(0 0 5px white); }

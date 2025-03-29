@@ -70,7 +70,6 @@ const elements = {
     enterButton: document.getElementById("enterButton"),
     infoText: document.getElementById("infoText"),
     tableContainer: document.getElementById("tableContainer"),
-    calculateButton: document.getElementById("calculateButton"),
     gpaDisplay: document.getElementById("gpaDisplay"),
     creditInfo: document.getElementById("creditInfo"),
     courseLabel: document.getElementById("courseLabel"),
@@ -93,7 +92,6 @@ function updateLanguage() {
     elements.questionLabel.textContent = t.question;
     elements.enterButton.textContent = t.enter;
     elements.infoText.textContent = t.info;
-    elements.calculateButton.textContent = t.calculate;
     elements.supportLabelFixed.textContent = t.supportLabel + " ";
     elements.supportLinkFixed.textContent = t.supportLink;
     elements.courseLabel.textContent = t.courseLabel;
@@ -169,6 +167,9 @@ function updateTableWithPreservedData(newCount) {
             </tr>
         `).join('')}
     `;
+
+    addInputNavigationListeners(); // Add navigation listeners to inputs
+    addAutoCalculateListeners(); // Add auto-calculate listeners to inputs
 }
 
 function handleEnterButtonClick() {
@@ -200,8 +201,10 @@ function handleEnterButtonClick() {
         photoContainer.style.display = "none"; // Hide the photo container
     }
 
-    elements.calculateButton.style.display = "inline-block";
     elements.gpaDisplay.style.display = "none"; // Ensure GPA display is hidden initially
+
+    addInputNavigationListeners(); // Add navigation listeners to inputs
+    addAutoCalculateListeners(); // Add auto-calculate listeners to inputs
 }
 
 function handleCalculateButtonClick() {
@@ -270,15 +273,63 @@ function handleCalculateButtonClick() {
     }
 }
 
+function handleInputNavigation(event) {
+    if (event.key === "Enter") {
+        event.preventDefault(); // Prevent default form submission behavior
+        const inputs = Array.from(document.querySelectorAll("input.credit, input.grade"));
+        const currentIndex = inputs.indexOf(event.target);
+        if (currentIndex !== -1 && currentIndex < inputs.length - 1) {
+            inputs[currentIndex + 1].focus(); // Focus the next input
+        }
+    }
+}
+
+// Add event listeners to dynamically created inputs
+function addInputNavigationListeners() {
+    const inputs = document.querySelectorAll("input.credit, input.grade");
+    inputs.forEach(input => {
+        input.addEventListener("keydown", handleInputNavigation);
+    });
+}
+
+function checkAndAddNextTable() {
+    const table = elements.tableContainer.querySelector("table:last-of-type");
+    if (!table) return;
+
+    const inputs = table.querySelectorAll("input.credit, input.grade");
+    const allFilled = Array.from(inputs).every(input => input.value.trim() !== "");
+
+    if (allFilled) {
+        elements.subjectCountInput.value = parseInt(elements.subjectCountInput.value) + 1; // Increment subject count
+        handleEnterButtonClick(); // Add a new table
+
+        // Focus the first credit input of the newly added row in the new table
+        const newTable = elements.tableContainer.querySelector("table:last-of-type");
+        const newRowCreditInput = newTable.querySelector("tr:last-of-type input.credit");
+        if (newRowCreditInput) {
+            newRowCreditInput.focus();
+        }
+    }
+}
+
+// Update auto-calculate listeners to include the check for adding the next table
+function addAutoCalculateListeners() {
+    const inputs = document.querySelectorAll("input.credit, input.grade");
+    inputs.forEach(input => {
+        input.addEventListener("input", () => {
+            handleCalculateButtonClick(); // Trigger GPA calculation
+            checkAndAddNextTable(); // Check and add the next table if needed
+        });
+    });
+}
+
 elements.langSelect.addEventListener("change", function() {
     currentLang = elements.langSelect.value;
     updateLanguage();
     if (elements.tableContainer.firstChild) {
         updateTableHeaders();
     }
-    if (elements.calculateButton.style.display !== "none") {
-        elements.calculateButton.click();
-    }
+    handleCalculateButtonClick();
 });
 
 elements.courseSelect.addEventListener("change", function() {
@@ -312,11 +363,18 @@ elements.languageImage.addEventListener('click', function() {
 });
 
 elements.enterButton.addEventListener("click", handleEnterButtonClick);
-elements.calculateButton.addEventListener("click", handleCalculateButtonClick);
 
 elements.subjectCountInput.addEventListener("keydown", function(event) {
     if (event.key === "Enter") {
         handleEnterButtonClick();
+    }
+});
+
+elements.subjectCountInput.addEventListener("input", function() {
+    const count = parseInt(elements.subjectCountInput.value);
+    if (count && count >= 1 && count <= 100) {
+        handleEnterButtonClick(); // Automatically update the table
+        handleCalculateButtonClick(); // Recalculate GPA
     }
 });
 
