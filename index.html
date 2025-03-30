@@ -35,9 +35,10 @@
   <div id="content">
     <div id="subjectCountInput">
       <h2 id="headerTitle"></h2>
-      <div>
-        <label id="questionLabel" for="subjectCount"></label><br>
-        <input type="number" id="subjectCount" min="1" max="100" placeholder="1-100">        <button id="enterButton"></button>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px;">
+        <button id="decrementButton">-</button>
+        <input type="number" id="subjectCount" min="1" max="100" step="1" placeholder="1-100">
+        <button id="incrementButton">+</button>
       </div>
       <div id="infoText"></div>
       <div id="gpaDisplay"></div>

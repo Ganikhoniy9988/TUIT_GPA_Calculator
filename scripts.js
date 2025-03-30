@@ -67,7 +67,6 @@ const elements = {
     langSelect: document.getElementById("langSelect"),
     headerTitle: document.getElementById("headerTitle"),
     questionLabel: document.getElementById("questionLabel"),
-    enterButton: document.getElementById("enterButton"),
     infoText: document.getElementById("infoText"),
     tableContainer: document.getElementById("tableContainer"),
     gpaDisplay: document.getElementById("gpaDisplay"),
@@ -84,18 +83,46 @@ const elements = {
 
 document.addEventListener("DOMContentLoaded", function() {
     elements.gpaDisplay.style.display = "none"; // Ensure GPA display is hidden on page load
+
+    // Check system language and set default language
+    const systemLang = navigator.language || navigator.userLanguage;
+    if (systemLang.startsWith("uz")) {
+        currentLang = "uz";
+    } else if (systemLang.startsWith("ru")) {
+        currentLang = "ru";
+    } else {
+        currentLang = "en";
+    }
+    elements.langSelect.value = currentLang; // Update the language dropdown
+    updateLanguage(); // Apply the selected language
 });
 
 function updateLanguage() {
     const t = texts[currentLang];
-    elements.headerTitle.textContent = t.headerTitle;
-    elements.questionLabel.textContent = t.question;
-    elements.enterButton.textContent = t.enter;
-    elements.infoText.textContent = t.info;
-    elements.supportLabelFixed.textContent = t.supportLabel + " ";
-    elements.supportLinkFixed.textContent = t.supportLink;
-    elements.courseLabel.textContent = t.courseLabel;
-    elements.courseInfo.textContent = `${elements.courseSelect.value} ${t.credits}`;
+
+    // Safely update elements only if they exist
+    if (elements.headerTitle) elements.headerTitle.textContent = t.headerTitle;
+    if (elements.questionLabel) elements.questionLabel.textContent = t.question;
+    if (elements.infoText) elements.infoText.textContent = t.info;
+    if (elements.supportLabelFixed) elements.supportLabelFixed.textContent = t.supportLabel + " ";
+    if (elements.supportLinkFixed) elements.supportLinkFixed.textContent = t.supportLink;
+    if (elements.courseLabel) elements.courseLabel.textContent = t.courseLabel;
+    if (elements.courseInfo) elements.courseInfo.textContent = `${elements.courseSelect.value} ${t.credits}`;
+    if (elements.subjectCountInput) elements.subjectCountInput.placeholder = t.question; // Set placeholder dynamically
+
+    // Update dynamically added elements
+    const table = elements.tableContainer.querySelector("table");
+    if (table) {
+        const headerCells = table.querySelectorAll("tr:first-child th");
+        if (headerCells.length === 2) {
+            headerCells[0].textContent = t.subjectHeader;
+            headerCells[1].textContent = t.inputHeader;
+        }
+        const creditInputs = table.querySelectorAll("input.credit");
+        const gradeInputs = table.querySelectorAll("input.grade");
+        creditInputs.forEach(input => input.placeholder = t.creditPlaceholder);
+        gradeInputs.forEach(input => input.placeholder = t.gradePlaceholder);
+    }
 }
 
 function updateTableHeaders() {
@@ -174,10 +201,10 @@ function updateTableWithPreservedData(newCount) {
 
 function handleEnterButtonClick() {
     const count = parseInt(elements.subjectCountInput.value);
-    if (!count || count < 1 || count > 100) {
+    /*if (!count || count < 1 || count > 100) {
         alert(currentLang === "uz" ? "Iltimos, 1 dan 100 gacha bo'lgan son kiriting!" : currentLang === "ru" ? "Пожалуйста, введите число от 1 до 100!" : "Please enter a number between 1 and 100!");
         return;
-    }
+    }*/
 
     const tableExists = elements.tableContainer.querySelector("table");
     if (tableExists) {
@@ -205,6 +232,8 @@ function handleEnterButtonClick() {
 
     addInputNavigationListeners(); // Add navigation listeners to inputs
     addAutoCalculateListeners(); // Add auto-calculate listeners to inputs
+
+    updateLanguage(); // Update language for newly added elements
 }
 
 function handleCalculateButtonClick() {
@@ -362,20 +391,75 @@ elements.languageImage.addEventListener('click', function() {
     elements.langSelect.dispatchEvent(new Event('change'));
 });
 
-elements.enterButton.addEventListener("click", handleEnterButtonClick);
-
-elements.subjectCountInput.addEventListener("keydown", function(event) {
-    if (event.key === "Enter") {
-        handleEnterButtonClick();
-    }
-});
-
-elements.subjectCountInput.addEventListener("input", function() {
-    const count = parseInt(elements.subjectCountInput.value);
+elements.subjectCountInput.addEventListener("input", function () {
+    let count = elements.subjectCountInput.value.replace(/\D/g, ""); // Remove non-numeric characters
+    elements.subjectCountInput.value = count > 100 ? 100 : count; // Restrict value to 100
     if (count && count >= 1 && count <= 100) {
         handleEnterButtonClick(); // Automatically update the table
         handleCalculateButtonClick(); // Recalculate GPA
     }
+});
+
+document.getElementById("incrementButton").addEventListener("click", function () {
+    let count = parseInt(elements.subjectCountInput.value) || 1; // Default to 1 if invalid
+    if (count < 100) {
+        count++;
+        elements.subjectCountInput.value = count;
+        handleEnterButtonClick(); // Automatically update the table
+        handleCalculateButtonClick(); // Recalculate GPA
+    }
+});
+
+document.getElementById("decrementButton").addEventListener("click", function () {
+    let count = parseInt(elements.subjectCountInput.value) || 1; // Default to 1 if invalid
+    if (count > 1) {
+        count--;
+        elements.subjectCountInput.value = count;
+        handleEnterButtonClick(); // Automatically update the table
+        handleCalculateButtonClick(); // Recalculate GPA
+    }
+});
+
+let incrementInterval, decrementInterval;
+
+document.getElementById("incrementButton").addEventListener("mousedown", function () {
+    incrementInterval = setInterval(() => {
+        let count = parseInt(elements.subjectCountInput.value) || 1; // Default to 1 if invalid
+        if (count < 100) {
+            count++;
+            elements.subjectCountInput.value = count;
+            handleEnterButtonClick(); // Automatically update the table
+            handleCalculateButtonClick(); // Recalculate GPA
+        }
+    }, 100); // Adjust speed by changing the interval time
+});
+
+document.getElementById("incrementButton").addEventListener("mouseup", function () {
+    clearInterval(incrementInterval);
+});
+
+document.getElementById("incrementButton").addEventListener("mouseleave", function () {
+    clearInterval(incrementInterval);
+});
+
+document.getElementById("decrementButton").addEventListener("mousedown", function () {
+    decrementInterval = setInterval(() => {
+        let count = parseInt(elements.subjectCountInput.value) || 1; // Default to 1 if invalid
+        if (count > 1) {
+            count--;
+            elements.subjectCountInput.value = count;
+            handleEnterButtonClick(); // Automatically update the table
+            handleCalculateButtonClick(); // Recalculate GPA
+        }
+    }, 100); // Adjust speed by changing the interval time
+});
+
+document.getElementById("decrementButton").addEventListener("mouseup", function () {
+    clearInterval(decrementInterval);
+});
+
+document.getElementById("decrementButton").addEventListener("mouseleave", function () {
+    clearInterval(decrementInterval);
 });
 
 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {

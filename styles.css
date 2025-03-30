@@ -69,6 +69,10 @@ body {
   animation: none;
 }
 
+#headerTitle {
+  text-align: center;
+}
+
 #content {
   width: auto;
   max-width: 100%;
@@ -84,10 +88,56 @@ body {
 .dark #content {
   background: #333;
 }
-#subjectCount, #enterButton {
+#subjectCount {
   width: 100%;
+  height: 40px;
   box-sizing: border-box;
+  -moz-appearance: textfield; /* Remove arrows in Firefox */
+  -webkit-appearance: none; /* Remove arrows in Chrome/Safari */
+  appearance: none; /* Remove arrows in other browsers */
+  text-align: center;
 }
+
+#subjectCount::-webkit-inner-spin-button,
+#subjectCount::-webkit-outer-spin-button {
+  -webkit-appearance: none; /* Remove spin buttons in Chrome/Safari */
+  margin: 0;
+}
+
+#subjectCountInput > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Space between buttons and input */
+  margin-top: 10px;
+}
+
+#decrementButton, #incrementButton {
+  width: 30%;
+  height: 40px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: rgb(29, 45, 91);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  animation: glow-synchronized 2s ease-in-out infinite; /* Add glow animation */
+}
+
+.dark #decrementButton, .dark #incrementButton {
+  animation: glow-gpa 2s ease-in-out infinite; /* Add glow animation for dark theme */
+  background-color: #151515; /* Dark background for buttons */
+}
+
+#decrementButton:hover, #incrementButton:hover,
+#decrementButton:focus, #incrementButton:focus {
+  background-color: #003399;
+  box-shadow: 0 0 10px rgba(0, 51, 153, 0.8); /* Blue glow effect */
+  outline: none; /* Remove default focus outline */
+}
+
 input[type="number"], select, button {
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -120,9 +170,9 @@ button:hover {
 }
 #tableContainer {
   overflow-x: auto;
-  max-height: 350px;
+  max-height: 250px;
   overflow-y: auto;
-  padding: 20px;
+  padding: 15px;
   scrollbar-width: thin; /* For Firefox */
   scrollbar-color: rgb(29, 45, 91) #f0f0f0; /* Scrollbar colors for light theme */
 }
@@ -139,7 +189,7 @@ button:hover {
   border-radius: 4px; /* Rounded corners */
 }
 .dark #tableContainer {
-  scrollbar-color: cyan #1c1c1c; /* Scrollbar colors for dark theme */
+  scrollbar-color: rgba(119, 119, 119, 0.8) #1c1c1c; /* Scrollbar colors for dark theme */
 }
 .dark #tableContainer::-webkit-scrollbar-thumb {
   background-color: cyan; /* Scrollbar thumb color for dark theme */
@@ -173,7 +223,7 @@ td {
 .dark table {
   background-color: #1e1e1e; /* Dark background for the table */
   border-collapse: collapse;
-  animation: glow-table-dark 2s ease-in-out infinite; /* Add dark theme glow animation */
+  animation: glow-gpa 2s ease-in-out infinite; /* Add dark theme glow animation (def=glow-table-dark) */
 }
 .dark th {
   background-color: #333; /* Darker header background */
