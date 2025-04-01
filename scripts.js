@@ -63,6 +63,16 @@ const texts = {
 let currentLang = "uz";
 let semestrCredit = parseFloat(document.getElementById("courseSelect").value);
 
+// Protect semestrCredit from unauthorized modifications
+Object.defineProperty(window, 'semestrCredit', {
+    configurable: false,
+    enumerable: true,
+    get: () => semestrCredit,
+    set: (value) => {
+        console.warn('Unauthorized attempt to modify semestrCredit:', value);
+    }
+});
+
 const elements = {
     langSelect: document.getElementById("langSelect"),
     headerTitle: document.getElementById("headerTitle"),
@@ -236,6 +246,8 @@ function handleEnterButtonClick() {
     updateLanguage(); // Update language for newly added elements
 }
 
+let autoCalculatePaused = false; // Flag to pause auto-calculation
+
 function handleCalculateButtonClick() {
     const table = elements.tableContainer.querySelector("table");
     if (!table) return;
@@ -258,20 +270,12 @@ function handleCalculateButtonClick() {
             creditInput.value = credit;
         }
         if (grade < 0) {
-            alert(currentLang === "uz" 
-                ? `Qator ${i}: Baho noto'g'ri kiritildi. Avtomatik tarzda 2 ga o'zgartirildi.`
-                : currentLang === "ru" 
-                ? `Строка ${i}: Значение оценки некорректно. Оно установлено в 2.`
-                : `Row ${i}: Grade value is incorrect. It has been set to 2.`);
+            console.warn(`Row ${i}: Grade value is negative. Automatically set to 2.`);
             grade = 2;
             gradeInput.value = grade;
         }
         if (grade > 5) {
-            alert(currentLang === "uz" 
-                ? `Qator ${i}: Baho 5 dan katta kiritildi. Avtomatik tarzda 5 ga o'zgартирилди.`
-                : currentLang === "ru" 
-                ? `Строка ${i}: Оценка больше 5. Теперь установлено как 5.`
-                : `Row ${i}: Grade is greater than 5. The value is now set to 5.`);
+            console.warn(`Row ${i}: Grade value exceeds 5. Automatically set to 5.`);
             grade = 5;
             gradeInput.value = grade;
         }
@@ -282,8 +286,21 @@ function handleCalculateButtonClick() {
         resultDiv.textContent = creditGrade || "";
     });
     if (totalCredits > semestrCredit) {
+        const exceededRow = Array.from(rows).find((row, i) => {
+            if (i === 0) return false; // Skip header row
+            const creditInput = row.querySelector("input.credit");
+            const credit = parseFloat(creditInput.value) || 0;
+            return totalCredits - credit <= semestrCredit;
+        });
+
+        if (exceededRow) {
+            const exceededInput = exceededRow.querySelector("input.credit");
+            exceededInput.value = ""; // Clear the exceeded credit input
+        }
+
+        autoCalculatePaused = true; // Pause auto-calculation
         alert(currentLang === "uz" 
-            ? `Kiritilgan kreditlar ${semestrCredit} dan oshib ketmasligi kerak!` 
+            ? `Kiritilgan kreditlar ${semestrCredit} dan oshib ketmasligi kerak!`
             : currentLang === "ru" 
             ? `Сумма кредитов не должна превышать ${semestrCredit}!`
             : `The total credits entered should not exceed ${semestrCredit}!`);
@@ -291,10 +308,11 @@ function handleCalculateButtonClick() {
         elements.gpaDisplay.textContent = "";
         elements.gpaDisplay.style.display = "none"; // Ensure GPA display is hidden if invalid
     } else {
+        autoCalculatePaused = false; // Resume auto-calculation
         const gpa = (sumCreditGrade / semestrCredit).toFixed(2);
         elements.gpaDisplay.textContent = `GPA: ${gpa}`;
         elements.creditInfo.textContent = currentLang === "uz" 
-            ? `Jadvalga kiritilgan kredit: ${totalCredits}` 
+            ? `Jadvalga kiritilgan kredit: ${totalCredits}`
             : currentLang === "ru" 
             ? `Выведенные кредиты из таблицы: ${totalCredits}`
             : `Credits entered in the table: ${totalCredits}`;
@@ -346,8 +364,18 @@ function addAutoCalculateListeners() {
     const inputs = document.querySelectorAll("input.credit, input.grade");
     inputs.forEach(input => {
         input.addEventListener("input", () => {
-            handleCalculateButtonClick(); // Trigger GPA calculation
-            checkAndAddNextTable(); // Check and add the next table if needed
+            if (autoCalculatePaused) {
+                // Check if total credits are now within the allowed limit
+                const totalCredits = Array.from(document.querySelectorAll("input.credit"))
+                    .reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0);
+                if (totalCredits <= semestrCredit) {
+                    autoCalculatePaused = false; // Resume auto-calculation
+                }
+            }
+            if (!autoCalculatePaused) {
+                handleCalculateButtonClick(); // Trigger GPA calculation
+                checkAndAddNextTable(); // Check and add the next table if needed
+            }
         });
     });
 }
@@ -401,7 +429,7 @@ elements.subjectCountInput.addEventListener("input", function () {
 });
 
 document.getElementById("incrementButton").addEventListener("click", function () {
-    let count = parseInt(elements.subjectCountInput.value) || 1; // Default to 1 if invalid
+    let count = parseInt(elements.subjectCountInput.value) || 0; // Default to 0 if invalid
     if (count < 100) {
         count++;
         elements.subjectCountInput.value = count;
