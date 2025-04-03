@@ -26,8 +26,21 @@ body {
   background-color: rgb(29, 45, 91);
   color: white;
   padding: 10px;
+  border-radius: 8px;
+  --header-height: 80px; /* Define a custom property for header height */
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+#header2 {
+  height: 50px; /* Adjust height as needed */
+  background-color: rgb(29, 45, 91); /* Same color as the first header */
   margin-bottom: 20px;
   border-radius: 8px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  display: flex;
+  align-items: center;
+  padding: 10px;
 }
 #header div {
   display: flex;
@@ -133,8 +146,8 @@ body {
 
 #decrementButton:hover, #incrementButton:hover,
 #decrementButton:focus, #incrementButton:focus {
-  background-color: #003399;
-  box-shadow: 0 0 10px rgba(0, 51, 153, 0.8); /* Blue glow effect */
+  background-color: rgb(29, 45, 91); /* Keep the original background color */
+  box-shadow: none; /* Remove the blue glow effect */
   outline: none; /* Remove default focus outline */
 }
 
@@ -170,8 +183,9 @@ button:hover {
 }
 #tableContainer {
   overflow-x: auto;
-  max-height: 250px;
-  overflow-y: auto;
+  min-height: 250px;
+  max-height: calc(100dvh - 350px); /* Use fixed values for header and supportFixed heights */
+  overflow-y: auto; /* Ensure scrolling if content exceeds max height */
   padding: 15px;
   scrollbar-width: thin; /* For Firefox */
   scrollbar-color: rgb(29, 45, 91) #f0f0f0; /* Scrollbar colors for light theme */
@@ -255,7 +269,7 @@ td {
   margin-top: 15px;
   margin-bottom: 15px;
   text-align: center;
-
+  
   display: inline-block;
   padding: 13px 17px;
   font-weight: 700;
@@ -281,7 +295,7 @@ a {
 .dark a {
   color: #66aaff;
 }
-@media only screen and (max-width: 670px) {
+@media only screen and (max-width: 670px) { /* org: 670px */ /* Adjust styles for mobile devices */
   body {
     padding: 10px;
   }
@@ -322,7 +336,15 @@ a {
     text-align: center;
   }
 }
-@media only screen and (min-width: 950px) {
+@media only screen and (max-width: 670px) {
+  #tableContainer {
+    overflow-x: auto;
+    min-height: 100dvh-150px;
+    max-height: calc(100vh - 670px); /* Adjust dynamically for smaller screens */
+    overflow-y: auto; /* Ensure scrolling if content exceeds max height */
+  }
+}
+@media only screen and (min-width: 670px) {
   #content {
     display: flex;
     justify-content: space-between;
@@ -330,6 +352,7 @@ a {
   }
   #tableContainer {
     width: 100%;
+    
   }
   #subjectCountInput {
     width: 60%;
@@ -350,6 +373,7 @@ a {
   padding: 10px;
   border-radius: 8px;
   margin-bottom: 20px;
+  --support-fixed-height: 60px; /* Define a custom property for supportFixed height */
 }
 
 #supportFixed div {
@@ -392,6 +416,17 @@ a {
   display: block;
   margin: 20px auto;
   max-width: 200px;
+}
+
+#subjectScoresImage {
+  height: 10px;
+  margin-left: 10px;
+}
+
+#headerText {
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
 }
 
 @keyframes glow-white {
@@ -437,6 +472,7 @@ a {
 table,
 #gpaDisplay {
   animation-delay: 0s; /* Start all animations at the same time */
+  
 }
 
 body, 
@@ -452,5 +488,22 @@ button,
 #gpaDisplay, 
 #supportFixed, 
 a {
-  transition: background-color 0.6s, color 0.3s; /* Smooth transition for theme change */
+  transition: background-color 0.6s, color 0.3s;
+  /*transition: all 0.6s cubic-bezier(0.4, 0, 1, 1);*/
+}
+
+.IndividualStudyPlan {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.IndividualStudyPlan img {
+  height: 40px;
+}
+
+.IndividualStudyPlan span {
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
 }

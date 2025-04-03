@@ -12,7 +12,8 @@
 <body>
   <div id="header">
     <div> 
-      <img src="img/Logo.png" alt="Logo" id="logoImage"> <!-- Add your logo here -->
+      <!-- Add logo with glowing effect -->
+      <img src="img/Logo.png" alt="Logo" id="logoImage" style="cursor: pointer;">
       <label id="courseLabel" for="courseSelect"></label>
       <select id="courseSelect">
         <option value="60" selected>1</option>
@@ -32,6 +33,15 @@
       <img src="img/day-night.png" alt="Dark Mode" id="darkModeToggle">
     </div>
   </div>
+
+  <!-- Add a second header -->
+  <div id="header2">
+    <div class="IndividualStudyPlan" style="display: flex; align-items: center; gap: 10px;">
+      <img src="img/Subject_Scores_List.png" alt="Subject Scores List" id="subjectScoresImage" style="height: 40px;">
+      <span id="headerText">Individual shaxsiy reja</span>
+    </div>
+  </div>
+
   <div id="content">
     <div id="subjectCountInput">
       <h2 id="headerTitle"></h2>

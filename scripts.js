@@ -120,6 +120,16 @@ function updateLanguage() {
     if (elements.courseInfo) elements.courseInfo.textContent = `${elements.courseSelect.value} ${t.credits}`;
     if (elements.subjectCountInput) elements.subjectCountInput.placeholder = t.question; // Set placeholder dynamically
 
+    // Update multilingual text in the header
+    const headerText = document.getElementById("headerText");
+    if (headerText) {
+        headerText.textContent = currentLang === "uz"
+            ? "Individual shaxsiy reja"
+            : currentLang === "ru"
+            ? "Индивидуальный учебный план"
+            : "Individual study plan";
+    }
+
     // Update dynamically added elements
     const table = elements.tableContainer.querySelector("table");
     if (table) {
@@ -394,84 +404,70 @@ elements.courseSelect.addEventListener("change", function() {
     elements.courseInfo.textContent = `${semestrCredit} ${texts[currentLang].credits}`;
 });
 
-document.getElementById('darkModeToggle').addEventListener('click', function() {
-    document.body.classList.toggle("dark");
-    const isDarkMode = document.body.classList.contains("dark");
-    const glowClass = isDarkMode ? 'glow-cyan' : 'glow-white';
-    document.querySelectorAll('#header img[src="img/Logo.png"], #header img[src="img/language.png"], #header img[src="img/day-night.png"]').forEach(img => {
-        img.classList.remove('glow-cyan', 'glow-white');
-        img.classList.add(glowClass);
+// Ensure darkModeToggle exists before adding event listener
+const darkModeToggle = document.getElementById("darkModeToggle");
+if (darkModeToggle) {
+    darkModeToggle.addEventListener("click", function () {
+        document.body.classList.toggle("dark");
+        const isDarkMode = document.body.classList.contains("dark");
+        const glowClass = isDarkMode ? 'glow-cyan' : 'glow-white';
+        document.querySelectorAll('#header img[src="img/Logo.png"], #header img[src="img/language.png"], #header img[src="img/day-night.png"]').forEach(img => {
+            img.classList.remove('glow-cyan', 'glow-white');
+            img.classList.add(glowClass);
+        });
     });
-});
+} else {
+    console.error("Dark mode toggle button not found.");
+}
 
-elements.logoImage.addEventListener('click', function() {
-    const currentCourse = parseInt(elements.courseSelect.value);
-    const nextCourse = currentCourse === 240 ? 60 : currentCourse + 60;
-    elements.courseSelect.value = nextCourse;
-    elements.courseSelect.dispatchEvent(new Event('change'));
-});
+// Ensure languageImage exists before adding event listener
+const languageImage = document.getElementById("languageImage");
+if (languageImage) {
+    languageImage.addEventListener("click", function () {
+        const languages = ['uz', 'ru', 'en'];
+        const currentLangIndex = languages.indexOf(currentLang);
+        const nextLangIndex = (currentLangIndex + 1) % languages.length;
+        elements.langSelect.value = languages[nextLangIndex];
+        elements.langSelect.dispatchEvent(new Event('change'));
+    });
+} else {
+    console.error("Language image not found.");
+}
 
-elements.languageImage.addEventListener('click', function() {
-    const languages = ['uz', 'ru', 'en'];
-    const currentLangIndex = languages.indexOf(currentLang);
-    const nextLangIndex = (currentLangIndex + 1) % languages.length;
-    elements.langSelect.value = languages[nextLangIndex];
-    elements.langSelect.dispatchEvent(new Event('change'));
-});
+// Ensure subjectCountInput exists before adding event listener
+if (elements.subjectCountInput) {
+    elements.subjectCountInput.addEventListener("input", function () {
+        let count = elements.subjectCountInput.value.replace(/\D/g, ""); // Remove non-numeric characters
+        elements.subjectCountInput.value = count > 100 ? 100 : count; // Restrict value to 100
+        if (count && count >= 1 && count <= 100) {
+            handleEnterButtonClick(); // Automatically update the table
+            handleCalculateButtonClick(); // Recalculate GPA
+        }
+    });
+} else {
+    console.error("Subject count input not found.");
+}
 
-elements.subjectCountInput.addEventListener("input", function () {
-    let count = elements.subjectCountInput.value.replace(/\D/g, ""); // Remove non-numeric characters
-    elements.subjectCountInput.value = count > 100 ? 100 : count; // Restrict value to 100
-    if (count && count >= 1 && count <= 100) {
-        handleEnterButtonClick(); // Automatically update the table
-        handleCalculateButtonClick(); // Recalculate GPA
-    }
-});
-
-document.getElementById("incrementButton").addEventListener("click", function () {
-    let count = parseInt(elements.subjectCountInput.value) || 0; // Default to 0 if invalid
-    if (count < 100) {
-        count++;
-        elements.subjectCountInput.value = count;
-        handleEnterButtonClick(); // Automatically update the table
-        handleCalculateButtonClick(); // Recalculate GPA
-    }
-});
-
-document.getElementById("decrementButton").addEventListener("click", function () {
-    let count = parseInt(elements.subjectCountInput.value) || 1; // Default to 1 if invalid
-    if (count > 1) {
-        count--;
-        elements.subjectCountInput.value = count;
-        handleEnterButtonClick(); // Automatically update the table
-        handleCalculateButtonClick(); // Recalculate GPA
-    }
-});
-
-let incrementInterval, decrementInterval;
-
-document.getElementById("incrementButton").addEventListener("mousedown", function () {
-    incrementInterval = setInterval(() => {
-        let count = parseInt(elements.subjectCountInput.value) || 1; // Default to 1 if invalid
+// Ensure incrementButton exists before adding event listener
+const incrementButton = document.getElementById("incrementButton");
+if (incrementButton) {
+    incrementButton.addEventListener("click", function () {
+        let count = parseInt(elements.subjectCountInput.value) || 0; // Default to 0 if invalid
         if (count < 100) {
             count++;
             elements.subjectCountInput.value = count;
             handleEnterButtonClick(); // Automatically update the table
             handleCalculateButtonClick(); // Recalculate GPA
         }
-    }, 100); // Adjust speed by changing the interval time
-});
+    });
+} else {
+    console.error("Increment button not found.");
+}
 
-document.getElementById("incrementButton").addEventListener("mouseup", function () {
-    clearInterval(incrementInterval);
-});
-
-document.getElementById("incrementButton").addEventListener("mouseleave", function () {
-    clearInterval(incrementInterval);
-});
-
-document.getElementById("decrementButton").addEventListener("mousedown", function () {
-    decrementInterval = setInterval(() => {
+// Ensure decrementButton exists before adding event listener
+const decrementButton = document.getElementById("decrementButton");
+if (decrementButton) {
+    decrementButton.addEventListener("click", function () {
         let count = parseInt(elements.subjectCountInput.value) || 1; // Default to 1 if invalid
         if (count > 1) {
             count--;
@@ -479,23 +475,31 @@ document.getElementById("decrementButton").addEventListener("mousedown", functio
             handleEnterButtonClick(); // Automatically update the table
             handleCalculateButtonClick(); // Recalculate GPA
         }
-    }, 100); // Adjust speed by changing the interval time
-});
-
-document.getElementById("decrementButton").addEventListener("mouseup", function () {
-    clearInterval(decrementInterval);
-});
-
-document.getElementById("decrementButton").addEventListener("mouseleave", function () {
-    clearInterval(decrementInterval);
-});
-
-if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.body.classList.add("dark");
+    });
+} else {
+    console.error("Decrement button not found.");
 }
 
-if (/Mobi|Android/i.test(navigator.userAgent)) {
-    document.body.classList.add("mobile");
+// Ensure logoImage exists before adding event listener
+const logoImage = document.getElementById("logoImage");
+if (logoImage) {
+    logoImage.addEventListener("click", function () {
+        // Open the specified URL in a new tab
+        window.open("https://lms.tuit.uz/dashboard/news", "_blank");
+    });
+} else {
+    console.error("Logo image not found.");
+}
+
+// Ensure IndividualStudyPlan exists before adding event listener
+const individualStudyPlan = document.querySelector(".IndividualStudyPlan");
+if (individualStudyPlan) {
+    individualStudyPlan.addEventListener("click", function () {
+        // Open the specified URL in a new tab
+        window.open("https://lms.tuit.uz/student/study-plan", "_blank");
+    });
+} else {
+    console.error("IndividualStudyPlan element not found.");
 }
 
 updateLanguage();
