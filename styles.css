@@ -340,7 +340,7 @@ a {
   #tableContainer {
     overflow-x: auto;
     min-height: 100dvh-150px;
-    max-height: calc(100vh - 670px); /* Adjust dynamically for smaller screens */
+    max-height: calc(100vh - 270px); /* Adjust dynamically for smaller screens */
     overflow-y: auto; /* Ensure scrolling if content exceeds max height */
   }
 }
