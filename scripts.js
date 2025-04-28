@@ -491,15 +491,6 @@ if (logoImage) {
     console.error("Logo image not found.");
 }
 
-// Ensure IndividualStudyPlan exists before adding event listener
-const individualStudyPlan = document.querySelector(".IndividualStudyPlan");
-if (individualStudyPlan) {
-    individualStudyPlan.addEventListener("click", function () {
-        // Open the specified URL in a new tab
-        window.open("https://lms.tuit.uz/student/study-plan", "_blank");
-    });
-} else {
-    console.error("IndividualStudyPlan element not found.");
-}
+
 
 updateLanguage();
